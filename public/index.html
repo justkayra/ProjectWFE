@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <script src="js/jquery-3.2.1.slim.min.js"></script>
+    <script src="js/process.js"></script>
+    <script src="js/axios.min.js"></script>
+    <script src="js/jsonpath.js"></script>
+</head>
+<body>
+<div class="container" style="margin-left: 10px; margin-right: 10px">
+    <form onsubmit="transformText()">
+        <div class="row" style="margin-top:20px">
+            <div class="one columns">
+            </div>
+            <div class="three columns">
+                <h2>Change mood of your expression</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="one columns">
+            </div>
+            <div class="three columns">
+                <label for="textToTransform">Message</label>
+                <textarea class="u-full-width" style="height: 300px; width: 500px " id="textToTransform">By working with all major service operators and on a global basis, we can offer cost effective end-to-end television solutions and recommendations, or very bespoke services if required. These can be technical service recommendations, distribution or marketing focussed. Our business focus has been to successfully open and develop international marketplaces across many distribution platform for our clients. We recognise that any product is only as good as its distribution, whether it is a free-to-air channel. or pay-service channels and content.</textarea>
+             <!--   <label class="example-send-yourself-copy">
+                    <input type="checkbox">
+                    <span class="label-body">Show original text</span>
+                </label>
+                <input class="button" type="button" value=" more emphasis">
+                <input class="button" type="button" value=" less emphasis">-->
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+            <div class="one columns">
+            </div>
+            <div class="three columns">
+                <input class="button-primary" style="font-size: large;" type="button"
+                       onclick="transformText($('textarea#textToTransform').val())" value="Transform">
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>
