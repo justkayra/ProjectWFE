@@ -6,7 +6,7 @@ function transformText(text) {
         headers: {"Access-Control-Allow-Origin": "*", "Content-type": "application/json"}
     });
   const formData = {"sourceText": text, "emphasis": "RANDOM" };
-  let URL = 'http://api.semantyca.com/service/transform/mood';
+  let URL = 'https://api.semantyca.com/service/transform/mood';
   connectSession.post(URL,formData)
         .then(response => {
             if (response.status == 200) {
