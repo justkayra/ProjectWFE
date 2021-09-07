@@ -3,7 +3,9 @@ function transformText(text) {
     const connectSession = axios.create({
         timeout: 100000,
         withCredentials: true,
-        headers: {"Access-Control-Allow-Origin": "*", "Content-type": "application/json"}
+        headers: { 'Access-Control-Allow-Origin': 'juka.semantyca.com',
+                   'Content-type': 'application/json'
+                }
     });
   const formData = {"sourceText": text, "emphasis": "RANDOM" };
   let URL = 'https://api.semantyca.com/service/transform/mood';
