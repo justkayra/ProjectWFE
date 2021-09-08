@@ -26,7 +26,7 @@ class Home extends React.Component {
             .then(response => {
                 let data = response.data;
                 this.setState({
-                    textToTransform: response.data.payloads.string
+                    textToTransform: data.payloads.string
                 });
             }).catch(error => {
                 console.log(error);
