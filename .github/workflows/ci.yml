@@ -31,7 +31,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
         rm: false
-        source: "public/"
+        source: "build/"
         target: "${{ secrets.REMOTE_DIR }}"
         
     - name: restart web-server
