@@ -22,7 +22,6 @@ const Home = () => {
     const transformText = (e) => {
         e.preventDefault();
         let serializedText = serialize(value);
-        console.log(serializedText);
         const connectSession = axios.create({
             withCredentials: false,
             headers: {
