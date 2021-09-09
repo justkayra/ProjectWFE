@@ -1,18 +1,28 @@
-import React from 'react';
-import {Mention, MentionsInput} from "react-mentions";
+import React, {useCallback, useMemo, useState} from 'react';
 import axios from 'axios';
+import {createEditor, Node} from "slate";
+import {Editable, Slate, withReact} from 'slate-react';
+import {Button, Container, Grid, LinearProgress} from "@material-ui/core";
 
-class Home extends React.Component {
+const Home = () => {
+    const renderLeaf = useCallback(props => <Leaf {...props} />, [])
+    const [progressShown, setProgressShown] = useState(false);
+    const editor = useMemo(() => withReact(createEditor()), [])
+    const [value, setValue] = useState([
+        {
+            type: 'paragraph',
+            children: [{
+                text: 'By working with all major service operators and on a global basis, we can offer cost effective end-to-end television solutions and recommendations, or very bespoke services if required. These can be technical service recommendations, distribution or marketing focussed. Our business focus has been to successfully open and develop international marketplaces across many distribution platform for our clients. We recognise that any product is only as good as its distribution, whether it is a free-to-air channel. or pay-service channels and content.'
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            textToTransform: 'By working with all major service operators and on a global basis, we can offer cost effective end-to-end television solutions and recommendations, or very bespoke services if required. These can be technical service recommendations, distribution or marketing focussed. Our business focus has been to successfully open and develop international marketplaces across many distribution platform for our clients. We recognise that any product is only as good as its distribution, whether it is a free-to-air channel. or pay-service channels and content.',
-        };
-    }
+            }
+            ]
+        }]);
 
-    transformText = (e) => {
+
+    const transformText = (e) => {
         e.preventDefault();
+        let serializedText = serialize(value);
+        console.log(serializedText);
         const connectSession = axios.create({
             withCredentials: false,
             headers: {
@@ -20,64 +30,75 @@ class Home extends React.Component {
                 'Content-type': 'application/json'
             }
         });
-        const formData = {"sourceText": this.state.textToTransform, "emphasis": "RANDOM"};
+        const formData = {"sourceText": serializedText, "emphasis": "RANDOM"};
         let URL = process.env.REACT_APP_REST_HOST + '/service/transform/mood';
+        setProgressShown(true);
         connectSession.post(URL, formData)
             .then(response => {
                 let data = response.data;
-                this.setState({
-                    textToTransform: data.payloads.string
-                });
+                console.log(data.payloads.arraylist);
+                setValue(data.payloads.arraylist);
+                setProgressShown(false);
             }).catch(error => {
-                console.log(error);
+            console.log(error);
+            setProgressShown(false);
         });
     }
 
-    handleChange = (e) => {
-        this.setState({
-            textToTransform: e.target.value
-        })
+    const serialize = nodes => {
+        return nodes.map(n => Node.string(n)).join('\n')
     }
 
-    render() {
-        return (
-            <form onSubmit={this.transformText}>
-                <div className="container">
-                    <div className="row" style={{marginTop: 20}}>
-                        <div className="one columns">
-                        </div>
-                        <div className="three columns">
-                            <h2>Change mood of your expression</h2>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="one columns">
-                        </div>
-                        <div className="three columns">
-                            <MentionsInput value={this.state.textToTransform} onChange={this.handleChange}
-                                           className="u-full-width" style={{height: 300, width: 500}}>
-                                <Mention
-                                    markup="@[__display__]"
-                                />
-                            </MentionsInput>
-                        </div>
-                    </div>
-                    <div className="row" style={{marginTop: 10}}>
-                        <div className="one columns">
-                        </div>
-                        <div className="three columns">
-                            <input
-                                className="button-primary"
-                                style={{fontSize: 18}}
-                                type="submit"
-                                value="Transform"/>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        )
+    return (
+        <Container>
+            <Grid container>
+                <form onSubmit={transformText}>
+                    <Grid item xs={12}>
+                        <h2>Change mood of your expression</h2>
+                    </Grid>
+                    <Grid item xs={12} style={{border: "1px dotted gray"}}>
+                        <Slate
+                            value={value}
+                            editor={editor}
+                            renderLeaf={renderLeaf}
+                            onChange={newValue => setValue(newValue)}
+                        >
+                            <Editable
+
+                                renderLeaf={renderLeaf}
+                            />
+                        </Slate>
+                    </Grid>
+                    <Grid item xs={12} style={{margin: "20px"}}>
+                        <Button variant="contained" color="primary" onClick={transformText}>Transform</Button>
+                    </Grid>
+                    <Grid item xs={12}>
+                        {progressShown && <LinearProgress/>}
+                    </Grid>
+                </form>
+            </Grid>
+        </Container>
+    )
+
+}
+
+const Leaf = ({ attributes, children, leaf }) => {
+    if (leaf.bold) {
+        children = <strong>{children}</strong>
     }
 
+    if (leaf.code) {
+        children = <code>{children}</code>
+    }
+
+    if (leaf.italic) {
+        children = <em>{children}</em>
+    }
+
+    if (leaf.underline) {
+        children = <u>{children}</u>
+    }
+    return <span {...attributes}>{children}</span>
 }
 
 export default Home;
