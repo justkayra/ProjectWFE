@@ -1,8 +1,9 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import axios from 'axios';
 import {createEditor, Node} from "slate";
-import {Editable, Slate, withReact} from 'slate-react';
+import {Editable, ReactEditor, Slate, withReact} from 'slate-react';
 import {Button, Container, Grid, LinearProgress} from "@material-ui/core";
+
 
 const Home = () => {
     const renderLeaf = useCallback(props => <Leaf {...props} />, [])
@@ -35,7 +36,6 @@ const Home = () => {
         connectSession.post(URL, formData)
             .then(response => {
                 let data = response.data;
-                console.log(data.payloads.arraylist);
                 setValue(data.payloads.arraylist);
                 setProgressShown(false);
             }).catch(error => {
@@ -44,9 +44,22 @@ const Home = () => {
         });
     }
 
+    function clearText() {
+       let val =  [
+            {
+                type: 'paragraph',
+                children: [{ text: '' }]
+            }]
+        setValue(val);
+        //editorRef.current.focus();
+        ReactEditor.focus(editor);
+
+    }
+
     const serialize = nodes => {
         return nodes.map(n => Node.string(n)).join('\n')
     }
+
 
     return (
         <Container>
@@ -55,23 +68,24 @@ const Home = () => {
                     <Grid item xs={12}>
                         <h2>Change mood of your expression</h2>
                     </Grid>
-                    <Grid item xs={12} style={{border: "1px dotted gray"}}>
+                    <Grid item xs={12} style={{background: "#04040"}}>
                         <Slate
                             value={value}
                             editor={editor}
                             renderLeaf={renderLeaf}
                             onChange={newValue => setValue(newValue)}
-                        >
-                            <Editable
 
-                                renderLeaf={renderLeaf}
-                            />
+                        >
+                            <Editable  autoFocus renderLeaf={renderLeaf} style={{backgroundColor: "lightgray"}} />
                         </Slate>
                     </Grid>
-                    <Grid item xs={12} style={{margin: "20px"}}>
+                    <Grid item xs={12} style={{marginTop: "20px"}}>
                         <Button variant="contained" color="primary" onClick={transformText}>Transform</Button>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} style={{marginTop: "20px"}}>
+                        <Button variant="contained" onClick={clearText}>Clear</Button>
+                    </Grid>
+                    <Grid item xs={12} style={{marginTop: "10px"}}>
                         {progressShown && <LinearProgress/>}
                     </Grid>
                 </form>
@@ -81,22 +95,11 @@ const Home = () => {
 
 }
 
-const Leaf = ({ attributes, children, leaf }) => {
+const Leaf = ({attributes, children, leaf}) => {
     if (leaf.bold) {
         children = <strong>{children}</strong>
     }
 
-    if (leaf.code) {
-        children = <code>{children}</code>
-    }
-
-    if (leaf.italic) {
-        children = <em>{children}</em>
-    }
-
-    if (leaf.underline) {
-        children = <u>{children}</u>
-    }
     return <span {...attributes}>{children}</span>
 }
 
