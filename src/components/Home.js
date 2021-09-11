@@ -2,7 +2,19 @@ import React, {useCallback, useMemo, useState} from 'react';
 import axios from 'axios';
 import {createEditor, Node} from "slate";
 import {Editable, ReactEditor, Slate, withReact} from 'slate-react';
-import {Button, Container, Grid, LinearProgress} from "@material-ui/core";
+import {
+    Button,
+    Container,
+    Grid,
+    LinearProgress,
+    makeStyles,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
+} from "@material-ui/core";
 
 
 const Home = () => {
@@ -18,10 +30,16 @@ const Home = () => {
             }
             ]
         }]);
+    const [legend, setLegend] = useState([]);
 
+    const useStyles = makeStyles({
+        table: {
+            minWidth: 50,
+        },
+    });
+    const classes = useStyles();
 
     const transformText = (e) => {
-        e.preventDefault();
         let serializedText = serialize(value);
         const connectSession = axios.create({
             withCredentials: false,
@@ -30,13 +48,14 @@ const Home = () => {
                 'Content-type': 'application/json'
             }
         });
-        const formData = {"sourceText": serializedText, "emphasis": "RANDOM"};
+        const formData = {"sourceText": serializedText, "emphasisType": "RANDOM"};
         let URL = process.env.REACT_APP_REST_HOST + '/service/transform/mood';
         setProgressShown(true);
         connectSession.post(URL, formData)
             .then(response => {
                 let data = response.data;
-                setValue(data.payloads.arraylist);
+                setValue(data.payloads.transformationresultdto.children);
+                setLegend(data.payloads.transformationresultdto.legendEntries);
                 setProgressShown(false);
             }).catch(error => {
             console.log(error);
@@ -45,13 +64,13 @@ const Home = () => {
     }
 
     function clearText() {
-       let val =  [
+        let val = [
             {
                 type: 'paragraph',
-                children: [{ text: '' }]
+                children: [{text: ''}]
             }]
         setValue(val);
-        //editorRef.current.focus();
+        setLegend([]);
         ReactEditor.focus(editor);
 
     }
@@ -74,9 +93,8 @@ const Home = () => {
                             editor={editor}
                             renderLeaf={renderLeaf}
                             onChange={newValue => setValue(newValue)}
-
                         >
-                            <Editable  autoFocus renderLeaf={renderLeaf} style={{backgroundColor: "lightgray"}} />
+                            <Editable autoFocus renderLeaf={renderLeaf} style={{backgroundColor: "lightgray"}}/>
                         </Slate>
                     </Grid>
                     <Grid item xs={12} style={{marginTop: "20px"}}>
@@ -85,10 +103,40 @@ const Home = () => {
                     <Grid item xs={12} style={{marginTop: "20px"}}>
                         <Button variant="contained" onClick={clearText}>Clear</Button>
                     </Grid>
-                    <Grid item xs={12} style={{marginTop: "10px"}}>
+                    <Grid item xs={12} style={{marginTop: "20px"}}>
                         {progressShown && <LinearProgress/>}
                     </Grid>
                 </form>
+            </Grid>
+            <Grid item xs={12} style={{marginTop: "20px"}}>
+                <h4>Legend</h4>
+            </Grid>
+            <Grid item xs={12}>
+                <TableContainer>
+                    <Table className={classes.table} aria-label="legend table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="right">Old word</TableCell>
+                                <TableCell align="right">#</TableCell>
+                                <TableCell align="right">New word</TableCell>
+                                <TableCell align="right">#</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {legend.map((row) => (
+                                <>
+                                <TableRow key={row.newWord + row.oldWord}>
+                                    <TableCell>{row.oldWord}</TableCell>
+                                    <TableCell>{row.emphasisRateOfOldWord}</TableCell>
+                                    <TableCell>{row.newWord}</TableCell>
+                                    <TableCell>{row.emphasisRateOfNewWord}</TableCell>
+                                </TableRow>
+                                </>
+
+                                ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </Grid>
         </Container>
     )
