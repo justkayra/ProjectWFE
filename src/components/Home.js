@@ -5,6 +5,7 @@ import {Editable, ReactEditor, Slate, withReact} from 'slate-react';
 import {
     Badge,
     Button,
+    ButtonGroup,
     Container,
     Grid,
     LinearProgress,
@@ -107,10 +108,11 @@ const Home = () => {
                         </Slate>
                     </Grid>
                     <Grid item xs={12} style={{marginTop: "20px"}}>
-                        <Button disabled={progressShown} variant="contained" color="primary" onClick={transformText}>Transform</Button>
-                    </Grid>
-                    <Grid item xs={12} style={{marginTop: "20px"}}>
-                        <Button disabled={progressShown} variant="contained" onClick={clearText}>Clear</Button>
+                        <ButtonGroup disableElevation variant="outlined" color="primary">
+                            <Button disabled={progressShown} variant="contained" color="primary" onClick={transformText}>Transform</Button>
+                            <Button disabled={progressShown} variant="outlined " onClick={clearText}>Clear</Button>
+                        </ButtonGroup>
+
                     </Grid>
                     <Grid item xs={12} style={{marginTop: "20px"}}>
                         {progressShown && <LinearProgress/>}
