@@ -107,10 +107,10 @@ const Home = () => {
                         </Slate>
                     </Grid>
                     <Grid item xs={12} style={{marginTop: "20px"}}>
-                        <Button variant="contained" color="primary" onClick={transformText}>Transform</Button>
+                        <Button disabled={progressShown} variant="contained" color="primary" onClick={transformText}>Transform</Button>
                     </Grid>
                     <Grid item xs={12} style={{marginTop: "20px"}}>
-                        <Button variant="contained" onClick={clearText}>Clear</Button>
+                        <Button disabled={progressShown} variant="contained" onClick={clearText}>Clear</Button>
                     </Grid>
                     <Grid item xs={12} style={{marginTop: "20px"}}>
                         {progressShown && <LinearProgress/>}
