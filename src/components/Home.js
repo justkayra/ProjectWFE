@@ -3,6 +3,7 @@ import axios from 'axios';
 import {createEditor, Node} from "slate";
 import {Editable, ReactEditor, Slate, withReact} from 'slate-react';
 import {
+    Badge,
     Button,
     Container,
     Grid,
@@ -15,7 +16,7 @@ import {
     TableHead,
     TableRow
 } from "@material-ui/core";
-
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 
 const Home = () => {
     const renderLeaf = useCallback(props => <Leaf {...props} />, [])
@@ -31,6 +32,7 @@ const Home = () => {
             ]
         }]);
     const [legend, setLegend] = useState([]);
+    const [stat, setStat] = useState(0);
 
     const useStyles = makeStyles({
         table: {
@@ -56,6 +58,7 @@ const Home = () => {
                 let data = response.data;
                 setValue(data.payloads.transformationresultdto.children);
                 setLegend(data.payloads.transformationresultdto.legendEntries);
+                setStat(data.payloads.transformationresultdto.legendEntries.length)
                 setProgressShown(false);
             }).catch(error => {
             console.log(error);
@@ -71,6 +74,7 @@ const Home = () => {
             }]
         setValue(val);
         setLegend([]);
+        setStat(0);
         ReactEditor.focus(editor);
 
     }
@@ -79,10 +83,15 @@ const Home = () => {
         return nodes.map(n => Node.string(n)).join('\n')
     }
 
+    const defaultProps = {
+        color: 'secondary',
+        children: <CheckCircleOutlineIcon/>
+    };
 
     return (
         <Container>
             <Grid container>
+            <Grid  ></Grid>
                 <form onSubmit={transformText}>
                     <Grid item xs={12}>
                         <h2>Change mood of your expression</h2>
@@ -109,7 +118,7 @@ const Home = () => {
                 </form>
             </Grid>
             <Grid item xs={12} style={{marginTop: "20px"}}>
-                <h4>Legend</h4>
+                {stat > 0 && <Badge badgeContent={stat} {...defaultProps}/>}
             </Grid>
             <Grid item xs={12}>
                 <TableContainer>
