@@ -11,7 +11,11 @@
     "react-scripts": "4.0.3",
     "slate": "^0.65.3",
     "slate-react": "^0.65.3",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^1.1.2",
+    "react-router-dom": "^5.1.2",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@material-ui/icons": "^4.11.2",
