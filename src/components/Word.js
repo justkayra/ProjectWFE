@@ -37,15 +37,7 @@ const Word = ({props}) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {legend.map((row) => (
-                                <>
-                                    <TableRow key={row.word}>
-                                        <TableCell>{row.word}</TableCell>
-                                        <TableCell>{row.strength}</TableCell>
-                                        <TableCell></TableCell>
-                                    </TableRow>
-                                </>
-                            ))}
+                          Body
                         </TableBody>
                     </Table>
                 </TableContainer>
