@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
     Container,
     Grid,
@@ -13,16 +13,7 @@ import {
 
 const Word = ({props}) => {
 
-    console.log(props);
-    const [legend, setLegend] = useState([{
-        word: 'big',
-        strength: 10
-    },
-        {
-            word: 'gigantic',
-            strength: 15
-        }
-    ]);
+
     const useStyles = makeStyles({
         table: {
             minWidth: 50,
