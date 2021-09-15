@@ -2,7 +2,7 @@ import React from 'react';
 import ReactQuill from "react-quill";
 import {Button, ButtonGroup, Grid, LinearProgress} from "@material-ui/core";
 import axios from "axios";
-import 'react-quill/dist/quill.snow.css'
+import 'react-quill/dist/quill.bubble.css'
 
 export class AppEditor extends React.Component {
     constructor(props) {
@@ -16,7 +16,6 @@ export class AppEditor extends React.Component {
         ops: [
             {insert: 'Hi.', attributes: {bold: true}},
             {insert: 'By working with all major service operators and on a global basis, we can offer cost effective end-to-end television solutions and recommendations, or very bespoke services if required. These can be technical service recommendations, distribution or marketing focussed. Our business focus has been to successfully open and develop international marketplaces across many distribution platform for our clients. We recognise that any product is only as good as its distribution, whether it is a free-to-air channel. or pay-service channels and content.'},
-            {insert: 'Grey', attributes: {color: '#bebd76'}}
         ]
     }
 
@@ -62,12 +61,6 @@ export class AppEditor extends React.Component {
         });
     }
 
-    insertText = () => {
-        let range = this.quillRef.getSelection();
-        let position = range ? range.index : 0;
-        this.quillRef.insertText(position, 'Hello, World! ')
-    }
-
     clearText = () => {
         this.setState({
             ops: []
@@ -82,7 +75,7 @@ export class AppEditor extends React.Component {
                     <ReactQuill
                         value={this.state.ops}
                         ref={(el) => { this.reactQuillRef = el }}
-                        theme={'snow'} />
+                        theme={'bubble'} />
                 </div>
                 <Grid item xs={12} style={{background: "#04040"}}/>
                 <Grid item xs={12} style={{marginTop: "20px"}}>
