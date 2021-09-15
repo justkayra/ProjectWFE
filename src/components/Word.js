@@ -1,18 +1,7 @@
 import React from 'react';
-import {
-    Container,
-    Grid,
-    makeStyles,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow
-} from "@material-ui/core";
+import {Container, Grid, makeStyles, Table, TableCell, TableContainer, TableHead, TableRow} from "@material-ui/core";
 
 const Word = ({props}) => {
-
 
     const useStyles = makeStyles({
         table: {
@@ -36,9 +25,7 @@ const Word = ({props}) => {
                                 <TableCell align="center"></TableCell>
                             </TableRow>
                         </TableHead>
-                        <TableBody>
-                          Body
-                        </TableBody>
+
                     </Table>
                 </TableContainer>
             </Grid>
