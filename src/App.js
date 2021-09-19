@@ -2,8 +2,9 @@ import React from 'react';
 import Home from "./components/Home";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Word from "./components/Word";
-import {Provider} from 'react-redux';
-import store from './store/store';
+import './App.css';
+import store from './store/store.js';
+import {Provider} from "react-redux";
 
 function App() {
     return (
@@ -12,7 +13,8 @@ function App() {
                 <div className="App">
                     <Switch>
                         <Route path="/" exact component={Home}/>
-                        <Route path="/word/:wordValue" exact component={Word}/>
+                        <Route path="/words" exact component={Home}/>
+                        <Route path="/words/:wordValue" exact component={Word}/>
                     </Switch>
                 </div>
             </Router>

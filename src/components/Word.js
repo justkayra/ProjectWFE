@@ -1,37 +1,77 @@
 import React from 'react';
-import {Container, Grid, makeStyles, Table, TableCell, TableContainer, TableHead, TableRow} from "@material-ui/core";
+import {Card, CardActions, CardContent, Container, Grid, IconButton, Typography} from "@material-ui/core";
+import {connect} from "react-redux";
+import {withRouter} from "react-router";
+import {fetchWord, updateRate} from "../store/words/actions";
+import PropTypes from "prop-types";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import Bar from "./Bar";
 
-const Word = ({props}) => {
 
-    const useStyles = makeStyles({
-        table: {
-            minWidth: 50,
-        }
-    });
-    const classes = useStyles();
+export class Word extends React.Component {
 
-    return (
-        <Container>
-            <Grid item xs={12}>
-               <h2>{props}</h2>
-            </Grid>
-            <Grid item xs={12}>
-                <TableContainer>
-                    <Table className={classes.table} aria-label="legend table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Related word</TableCell>
-                                <TableCell>Strength</TableCell>
-                                <TableCell align="center"></TableCell>
-                            </TableRow>
-                        </TableHead>
+    componentDidMount() {
+        this.props.fetchWord(this.props.match.params.wordValue);
+    }
 
-                    </Table>
-                </TableContainer>
-            </Grid>
-        </Container>
-    )
+    render() {
+        return (
+            <Container disableGutters={true}>
+                <Bar/>
+                <Container>
+                    <Grid container>
+                        <Grid item xs={5}>
+                            <h2>{this.props.match.params.wordValue}</h2>
+                        </Grid>
+                        <Grid>
+                            <h5>{this.props.wordType}</h5>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12}>
+                        {Object.keys(this.props.associations).map((row) =>
+                            <Card style={{marginBottom: "15px"}} key={row}>
+                                <CardContent>
+                                    <Typography variant="h5" component="div">
+                                        {this.props.associations[row].value}
+                                    </Typography>
+                                    <Typography variant="h4" style={{marginTop: "10px"}}>
+                                        {this.props.associations[row].emphasisRank}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <IconButton
+                                        aria-label="increase emphasises"
+                                        onClick={() => this.props.updateRate(this.props.wordId, this.props.associations[row].value, 1)}
+                                    >
+                                        <ArrowUpwardIcon/>
+                                    </IconButton>
+                                    <IconButton
+                                        aria-label="decrease emphasises"
+                                        onClick={() => this.props.updateRate(this.props.wordId, this.props.associations[row].value, -1)}>
+                                        <ArrowDownwardIcon/>
+                                    </IconButton>
+                                </CardActions>
+                            </Card>
+                        )}
+                    </Grid>
+                </Container>
+            </Container>)
+    }
 
 }
 
-export default Word;
+const mapStateToProps = state => ({
+    wordId: state.wordReducer.wordId,
+    wordType: state.wordReducer.wordType,
+    associations: state.wordReducer.associations
+});
+
+Word.propTypes = {
+    fetchWord: PropTypes.func.isRequired,
+    updateRate: PropTypes.func.isRequired
+};
+
+export default connect(mapStateToProps, {fetchWord, updateRate})(withRouter(Word));
+
+

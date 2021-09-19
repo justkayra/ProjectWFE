@@ -1,24 +1,22 @@
 import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
-import reducers from "./reducers";
-
-
-const initialState = {};
+import {createBrowserHistory} from "history";
+import rootReducer from './reducers.js';
 
 const middleware = [thunk];
+export const history = createBrowserHistory()
+const initialState = {};
+
 
 const store = createStore(
-    reducers,
+    rootReducer,
     initialState,
-   /* compose(
-        applyMiddleware(...middleware),
-        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-    )*/
+    applyMiddleware(...middleware)
+)
 
-   applyMiddleware(...middleware)
+export default store
 
-);
 
-window.store = store;
 
-export default store;
+
+

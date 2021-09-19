@@ -75,7 +75,7 @@ export class AppEditor extends React.Component {
                     <ReactQuill
                         value={this.state.ops}
                         ref={(el) => { this.reactQuillRef = el }}
-                        theme={'bubble'} />
+                        theme={'bubble'}/>
                 </div>
                 <Grid item xs={12} style={{background: "#04040"}}/>
                 <Grid item xs={12} style={{marginTop: "20px"}}>
