@@ -5,10 +5,9 @@ export const TRANSFORM = "TRANSFORM";
 export const CLEAN = "CLEAN";
 let source;
 
-export const transform = (sourceText) => dispatch => {
+export const transform = (sourceText, type) => dispatch => {
     const CancelToken = axios.CancelToken;
     source = CancelToken.source();
-
 
     const connectSession = axios.create({
         timeout: 30000,
@@ -19,11 +18,11 @@ export const transform = (sourceText) => dispatch => {
         cancelToken: source.token
     });
     dispatch(loading());
-    const formData = {"sourceText": sourceText, "emphasisType": "RANDOM"};
+    const formData = {"sourceText": sourceText, "emphasisType": type};
     let URL = process.env.REACT_APP_REST_HOST + '/service/transform/mood';
     connectSession.post(URL, formData)
         .then(response => {
-            console.log('data', response.data.payloads);
+            //console.log('data', response.data.payloads);
             dispatch(stopLoading());
             dispatch(transformSuccess(response.data.payloads))
         })
