@@ -1,22 +1,42 @@
 import React from 'react';
 import ReactQuill from "react-quill";
-import {Button, ButtonGroup, Grid, LinearProgress} from "@material-ui/core";
-import axios from "axios";
 import 'react-quill/dist/quill.bubble.css'
+import {connect} from "react-redux";
+import {cancelRequest, clean, transform} from "../store/transformation/actions";
+import PropTypes from "prop-types";
+import {
+    Badge,
+    Button,
+    ButtonGroup,
+    Container,
+    Grid,
+    LinearProgress,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
+} from "@mui/material";
+import {Link} from "react-router-dom";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import {makeStyles} from "@material-ui/core";
 
-export class AppEditor extends React.Component {
+
+class AppEditor extends React.Component {
     constructor(props) {
         super(props)
         this.quillRef = props.ref;
         this.reactQuillRef = null;
-    }
-
-    state = {
-        progressShown: false,
-        ops: [
-            {insert: 'Hi.', attributes: {bold: true}},
-            {insert: 'By working with all major service operators and on a global basis, we can offer cost effective end-to-end television solutions and recommendations, or very bespoke services if required. These can be technical service recommendations, distribution or marketing focussed. Our business focus has been to successfully open and develop international marketplaces across many distribution platform for our clients. We recognise that any product is only as good as its distribution, whether it is a free-to-air channel. or pay-service channels and content.'},
-        ]
+        this.tableClasses = makeStyles({
+            table: {
+                minWidth: 50,
+            },
+        });
+        this.badgesDefaultProps = {
+            color: 'secondary',
+            children: <CheckCircleOutlineIcon/>
+        };
     }
 
     componentDidMount() {
@@ -27,71 +47,111 @@ export class AppEditor extends React.Component {
         this.attachQuillRefs()
     }
 
+    setTable = (legent) => {
+        this.setState({
+                legent: legent,
+                stat: legent.length
+            }
+        )
+    }
+
+
     attachQuillRefs = () => {
         if (typeof this.reactQuillRef.getEditor !== 'function') return;
         this.quillRef = this.reactQuillRef.getEditor();
     }
 
-    transformText = () => {
-        const connectSession = axios.create({
-            withCredentials: false,
-            headers: {
-                'Accept': 'application/json',
-                'Content-type': 'application/json'
-            }
-        });
-        const formData = {"sourceText": this.quillRef.getText(0, this.quillRef.getLength()), "emphasisType": "RANDOM"};
-        let URL = process.env.REACT_APP_REST_HOST + '/service/transform/mood';
-        this.setState({
-            progressShown: true
-        })
-        connectSession.post(URL, formData)
-            .then(response => {
-                let data = response.data;
-                this.setState({
-                    progressShown: false,
-                    ops: data.payloads.ops
-                })
-                this.props.setTable(data.payloads.legend);
-            }).catch(error => {
-            console.log(error);
-            this.setState({
-                progressShown: false
-            })
-        });
-    }
-
     clearText = () => {
-        this.setState({
-            ops: []
-        })
-        this.props.setTable([]);
+        this.props.clean();
     }
 
     render() {
         return (
-            <form onSubmit={this.transformText}>
-                <div>
-                    <ReactQuill
-                        value={this.state.ops}
-                        ref={(el) => { this.reactQuillRef = el }}
-                        theme={'bubble'}/>
-                </div>
-                <Grid item xs={12} style={{background: "#04040"}}/>
-                <Grid item xs={12} style={{marginTop: "20px"}}>
-                    <ButtonGroup disableElevation variant="outlined" color="primary">
-                        <Button disabled={this.state.progressShown}
-                                variant="contained" color="primary"
-                                onClick={this.transformText}>Transform</Button>
-                       <Button disabled={this.state.progressShown}
-                                variant="outlined"
-                                onClick={this.clearText}>Clear</Button>
-                    </ButtonGroup>
+            <Container>
+                <Grid container>
+                    <Grid item xs={12}>
+                        <h2>Change mood of your expression</h2>
+                    </Grid>
+                    <form onSubmit={this.props.transform}>
+                        <div>
+                            <ReactQuill
+                                placeholder={this.props.placeholder}
+                                value={this.props.ops}
+                                ref={(el) => {
+                                    this.reactQuillRef = el
+                                }}
+                                theme={'bubble'}/>
+                        </div>
+                        <Grid item xs={12} style={{background: "#04040"}}/>
+                        <Grid item xs={12} style={{marginTop: "20px"}}>
+                            <ButtonGroup disableElevation variant="outlined" color="primary">
+                                <Button disabled={this.props.progressShown}
+                                        variant="contained" color="primary"
+                                        onClick={() => this.props.transform(this.quillRef.getText(0, this.quillRef.getLength()))}>Transform</Button>
+                                <Button disabled={this.props.progressShown}
+                                        variant="outlined"
+                                        onClick={this.clearText}>Clear</Button>
+                                <Button  color="error" disabled={!this.props.progressShown}
+                                        variant="outlined"
+                                        onClick={this.props.cancelRequest}>Stop</Button>
+                            </ButtonGroup>
+                        </Grid>
+                        <Grid item xs={12} style={{marginTop: "20px"}}>
+                            {this.props.progressShown && <LinearProgress/>}
+                        </Grid>
+                    </form>
                 </Grid>
                 <Grid item xs={12} style={{marginTop: "20px"}}>
-                    {this.state.progressShown && <LinearProgress/>}
+                    {this.props.legend.legend.length > 0 &&
+                    <Badge badgeContent={this.props.legend.legend.length} {...this.badgesDefaultProps}/>}
                 </Grid>
-            </form>
+                <Grid item xs={12}>
+                    <TableContainer>
+                        <Table className={this.tableClasses.table} aria-label="legend table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="right">Old word</TableCell>
+                                    <TableCell align="right">#</TableCell>
+                                    <TableCell align="right">New word</TableCell>
+                                    <TableCell align="right">#</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {this.props.legend.legend.map((row) => (
+                                    <>
+                                        <TableRow key={row.newWord + row.oldWord}>
+                                            <TableCell><Link style={{color: '#000000'}}
+                                                             to={"/words/" + row.oldWord}>{row.oldWord}</Link></TableCell>
+                                            <TableCell>{row.emphasisRateOfOldWord}</TableCell>
+                                            <TableCell>{row.newWord}</TableCell>
+                                            <TableCell>{row.emphasisRateOfNewWord}</TableCell>
+                                        </TableRow>
+                                    </>
+
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Grid>
+            </Container>
         )
     }
 }
+
+
+AppEditor.propTypes = {
+    transform: PropTypes.func.isRequired,
+    clean: PropTypes.func.isRequired,
+    cancelRequest: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+    ops: state.transformReducer,
+    legend: state.transformReducer,
+    placeholder: state.transformReducer.placeholder,
+    progressShown: state.loadingReducer.progressShown
+
+
+});
+
+export default connect(mapStateToProps, {transform, clean, cancelRequest})(AppEditor);

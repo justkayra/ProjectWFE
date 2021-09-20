@@ -1,13 +1,12 @@
 import React from 'react';
-import {Card, CardActions, CardContent, Container, Grid, IconButton, Typography} from "@material-ui/core";
+import {Container, Grid, IconButton} from "@material-ui/core";
 import {connect} from "react-redux";
 import {withRouter} from "react-router";
 import {fetchWord, updateRate} from "../store/words/actions";
 import PropTypes from "prop-types";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import Bar from "./Bar";
-
+import {TableCell, TableRow} from "@mui/material";
 
 export class Word extends React.Component {
 
@@ -17,45 +16,37 @@ export class Word extends React.Component {
 
     render() {
         return (
-            <Container disableGutters={true}>
-                <Bar/>
-                <Container>
-                    <Grid container>
-                        <Grid item xs={5}>
-                            <h2>{this.props.match.params.wordValue}</h2>
-                        </Grid>
-                        <Grid>
-                            <h5>{this.props.wordType}</h5>
-                        </Grid>
+            <Container>
+                <Grid container>
+                    <Grid item xs={5}>
+                        <h2>{this.props.match.params.wordValue}</h2>
                     </Grid>
-                    <Grid item xs={12}>
-                        {Object.keys(this.props.associations).map((row) =>
-                            <Card style={{marginBottom: "15px"}} key={row}>
-                                <CardContent>
-                                    <Typography variant="h5" component="div">
-                                        {this.props.associations[row].value}
-                                    </Typography>
-                                    <Typography variant="h4" style={{marginTop: "10px"}}>
-                                        {this.props.associations[row].emphasisRank}
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <IconButton
-                                        aria-label="increase emphasises"
-                                        onClick={() => this.props.updateRate(this.props.wordId, this.props.associations[row].value, 1)}
-                                    >
-                                        <ArrowUpwardIcon/>
-                                    </IconButton>
-                                    <IconButton
-                                        aria-label="decrease emphasises"
-                                        onClick={() => this.props.updateRate(this.props.wordId, this.props.associations[row].value, -1)}>
-                                        <ArrowDownwardIcon/>
-                                    </IconButton>
-                                </CardActions>
-                            </Card>
-                        )}
+                    <Grid>
+                        <h5>{this.props.wordType}</h5>
                     </Grid>
-                </Container>
+                </Grid>
+                <Grid item xs={12}>
+                    {Object.keys(this.props.associations).map((row) =>
+                        <>
+                            <TableRow key={row.newWord + row.oldWord}>
+                                <TableCell>{this.props.associations[row].value}</TableCell>
+                                <TableCell>{this.props.associations[row].emphasisRank}</TableCell>
+                                <TableCell><IconButton
+                                    aria-label="increase emphasises"
+                                    onClick={() => this.props.updateRate(this.props.wordId, this.props.associations[row].value, 1)}
+                                >
+                                    <ArrowUpwardIcon/>
+                                </IconButton></TableCell>
+                                <TableCell><IconButton
+                                    aria-label="decrease emphasises"
+                                    onClick={() => this.props.updateRate(this.props.wordId, this.props.associations[row].value, -1)}>
+                                    <ArrowDownwardIcon/>
+                                </IconButton></TableCell>
+                            </TableRow>
+                        </>
+
+                    )}
+                </Grid>
             </Container>)
     }
 

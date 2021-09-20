@@ -13,8 +13,8 @@ import {
 } from "@material-ui/core";
 import {Link} from "react-router-dom";
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import {AppEditor} from "./AppEditor";
 import Bar from "./Bar";
+import AppEditor from "./AppEditor";
 
 const Home = () => {
     const [legend, setLegend] = useState([]);
