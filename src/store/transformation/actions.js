@@ -11,7 +11,7 @@ export const transform = (sourceText) => dispatch => {
 
 
     const connectSession = axios.create({
-        timeout: 10000,
+        timeout: 30000,
         withCredentials: true,
         headers: {
             'Accept': 'application/json'
