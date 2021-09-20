@@ -21,7 +21,7 @@ import {
 import {Link} from "react-router-dom";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import {makeStyles} from "@material-ui/core";
-
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 class AppEditor extends React.Component {
     constructor(props) {
@@ -107,13 +107,10 @@ class AppEditor extends React.Component {
                 </Grid>
                 <Grid item xs={12}>
                     <TableContainer>
-                        <Table className={this.tableClasses.table} aria-label="legend table">
+                        <Table size="small" className={this.tableClasses.table} aria-label="legend table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="right">Old word</TableCell>
-                                    <TableCell align="right">#</TableCell>
-                                    <TableCell align="right">New word</TableCell>
-                                    <TableCell align="right">#</TableCell>
+                                    <TableCell colSpan={3}>Replaced words list</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -122,9 +119,8 @@ class AppEditor extends React.Component {
                                         <TableRow key={row.newWord + row.oldWord}>
                                             <TableCell><Link style={{color: '#000000'}}
                                                              to={"/words/" + row.oldWord}>{row.oldWord}</Link></TableCell>
-                                            <TableCell>{row.emphasisRateOfOldWord}</TableCell>
+                                            <TableCell><ArrowForwardIcon/></TableCell>
                                             <TableCell>{row.newWord}</TableCell>
-                                            <TableCell>{row.emphasisRateOfNewWord}</TableCell>
                                         </TableRow>
                                     </>
 

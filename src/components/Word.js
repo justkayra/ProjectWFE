@@ -1,14 +1,21 @@
 import React from 'react';
-import {Container, Grid, IconButton} from "@material-ui/core";
+import {Container, Grid, IconButton, makeStyles} from "@material-ui/core";
 import {connect} from "react-redux";
 import {withRouter} from "react-router";
 import {fetchWord, updateRate} from "../store/words/actions";
 import PropTypes from "prop-types";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import {TableCell, TableRow} from "@mui/material";
+import {Table, TableCell, TableContainer, TableRow} from "@mui/material";
 
 export class Word extends React.Component {
+
+    tableClasses = makeStyles({
+        table: {
+            minWidth: 50,
+        },
+    });
+
 
     componentDidMount() {
         this.props.fetchWord(this.props.match.params.wordValue);
@@ -26,26 +33,29 @@ export class Word extends React.Component {
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                    {Object.keys(this.props.associations).map((row) =>
-                        <>
-                            <TableRow key={row.newWord + row.oldWord}>
-                                <TableCell>{this.props.associations[row].value}</TableCell>
-                                <TableCell>{this.props.associations[row].emphasisRank}</TableCell>
-                                <TableCell><IconButton
-                                    aria-label="increase emphasises"
-                                    onClick={() => this.props.updateRate(this.props.wordId, this.props.associations[row].value, 1)}
-                                >
-                                    <ArrowUpwardIcon/>
-                                </IconButton></TableCell>
-                                <TableCell><IconButton
-                                    aria-label="decrease emphasises"
-                                    onClick={() => this.props.updateRate(this.props.wordId, this.props.associations[row].value, -1)}>
-                                    <ArrowDownwardIcon/>
-                                </IconButton></TableCell>
-                            </TableRow>
-                        </>
-
-                    )}
+                    <TableContainer>
+                        <Table size="small" className={this.tableClasses.table} aria-label="words table">
+                            {Object.keys(this.props.associations).map((row) =>
+                                <>
+                                    <TableRow key={row.newWord + row.oldWord}>
+                                        <TableCell>{this.props.associations[row].value}</TableCell>
+                                        <TableCell><h2>{this.props.associations[row].emphasisRank}</h2></TableCell>
+                                        <TableCell><IconButton
+                                            aria-label="increase emphasises"
+                                            onClick={() => this.props.updateRate(this.props.wordId, this.props.associations[row].value, 1)}
+                                        >
+                                            <ArrowUpwardIcon/>
+                                        </IconButton></TableCell>
+                                        <TableCell><IconButton
+                                            aria-label="decrease emphasises"
+                                            onClick={() => this.props.updateRate(this.props.wordId, this.props.associations[row].value, -1)}>
+                                            <ArrowDownwardIcon/>
+                                        </IconButton></TableCell>
+                                    </TableRow>
+                                </>
+                            )}
+                        </Table>
+                    </TableContainer>
                 </Grid>
             </Container>)
     }
