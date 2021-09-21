@@ -6,7 +6,7 @@ import {fetchWord, updateRate} from "../store/words/actions";
 import PropTypes from "prop-types";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import {Table, TableBody, TableCell, TableContainer, TableRow} from "@mui/material";
+import {Table, TableBody, TableCell, TableContainer, TableRow, Typography} from "@mui/material";
 
 export class Word extends React.Component {
 
@@ -18,11 +18,8 @@ export class Word extends React.Component {
         return (
             <Container>
                 <Grid container>
-                    <Grid item xs={5}>
-                        <h2>{this.props.match.params.wordValue}</h2>
-                    </Grid>
-                    <Grid>
-                        <h5>{this.props.wordType}</h5>
+                    <Grid item xs={12}>
+                        <h2>Change emphasis of the related words</h2>
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
@@ -31,19 +28,34 @@ export class Word extends React.Component {
                             <TableBody>
                                 {Object.keys(this.props.associations).map((row) =>
                                     <TableRow key={row}>
-                                        <TableCell>{this.props.associations[row].value}</TableCell>
-                                        <TableCell><h2>{this.props.associations[row].emphasisRank}</h2></TableCell>
-                                        <TableCell><IconButton
-                                            aria-label="increase emphasises"
-                                            onClick={() => this.props.updateRate(this.props.wordId, this.props.associations[row].value, 1)}
-                                        >
-                                            <ArrowUpwardIcon/>
-                                        </IconButton></TableCell>
-                                        <TableCell><IconButton
-                                            aria-label="decrease emphasises"
-                                            onClick={() => this.props.updateRate(this.props.wordId, this.props.associations[row].value, -1)}>
-                                            <ArrowDownwardIcon/>
-                                        </IconButton></TableCell>
+                                        {this.props.associations[row].baseWord
+                                            ?
+                                            <>
+                                                <TableCell align={"center"}
+                                                    style={{backgroundColor:'#e25b3d', color: '#FFFFFF',}}
+                                                    colSpan={5}>
+                                                    <Typography variant="h5">{this.props.associations[row].value}</Typography>
+                                                    <Typography variant="h7">{this.props.wordType}</Typography>
+                                                </TableCell>
+                                            </>
+                                            :
+                                            <>
+                                                <TableCell>{this.props.associations[row].value}</TableCell>
+                                                <TableCell><h2>{this.props.associations[row].emphasisRank}</h2>
+                                                </TableCell>
+                                                <TableCell><IconButton
+                                                    aria-label="increase emphasises"
+                                                    onClick={() => this.props.updateRate(this.props.wordId, this.props.associations[row].value, 1)}
+                                                >
+                                                    <ArrowUpwardIcon/>
+                                                </IconButton></TableCell>
+                                                <TableCell><IconButton
+                                                    aria-label="decrease emphasises"
+                                                    onClick={() => this.props.updateRate(this.props.wordId, this.props.associations[row].value, -1)}>
+                                                    <ArrowDownwardIcon/>
+                                                </IconButton></TableCell>
+                                            </>
+                                        }
                                     </TableRow>
                                 )}
                             </TableBody>

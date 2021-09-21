@@ -16,8 +16,8 @@ const theme = createTheme({
             contrastText: "#393c3c"
         },
         secondary: {
-            main: "#F5BD1F",
-            contrastText: "#6a0dad "
+            main: "#0b66ce",
+            contrastText: "#f3f3f7"
         }
     },
 });
@@ -27,8 +27,8 @@ function App() {
         <Provider store={store}>
             <ThemeProvider theme={theme}>
                 <Container disableGutters={true}>
-                    <Bar/>
                     <Router>
+                        <Bar/>
                         <div className="App">
                             <Switch>
                                 <Route path="/" exact component={AppEditor}/>
