@@ -86,18 +86,22 @@ class AppEditor extends React.Component {
                         <Grid item xs={12} style={{marginTop: "20px"}}>
                             <ButtonGroup disableElevation variant="outlined" color="primary">
                                 <Button disabled={this.props.progressShown}
-                                        variant="contained" color="primary"
+                                        variant="contained"
+                                        style={{backgroundColor: '#e25b3d', color: '#FFFFFF'}}
                                         onClick={() => this.props.transform(this.quillRef.getText(0, this.quillRef.getLength()), 'STRONGER')}>Stronger</Button>
                                 <Button disabled={this.props.progressShown}
-                                        variant="contained" color="primary"
+                                        variant="contained"
+                                        style={{backgroundColor: '#27a052', color: '#FFFFFF'}}
                                         onClick={() => this.props.transform(this.quillRef.getText(0, this.quillRef.getLength()), 'WEAKER')}>Weaker</Button>
                                 <Button disabled={this.props.progressShown}
-                                        variant="contained" color="primary"
+                                        variant="contained"
+                                        style={{backgroundColor: '#2488cb', color: '#FFFFFF'}}
                                         onClick={() => this.props.transform(this.quillRef.getText(0, this.quillRef.getLength()), 'RANDOMLY')}>Random</Button>
                             </ButtonGroup>
                             <ButtonGroup disableElevation variant="outlined" color="primary">
                                 <Button disabled={this.props.progressShown}
                                         variant="outlined"
+                                        style={{backgroundColor: '#f1efef', color: '#c0973b'}}
                                         onClick={this.clearText}>Clear</Button>
                                 <Button color="error" disabled={!this.props.progressShown}
                                         variant="outlined"

@@ -12,8 +12,8 @@ import Bar from "./components/Bar";
 const theme = createTheme({
     palette: {
         primary: {
-            main: "#17b5df",
-            contrastText: "#e2e2e2"
+            main: "#ffc01e",
+            contrastText: "#393c3c"
         },
         secondary: {
             main: "#F5BD1F",
